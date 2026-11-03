@@ -14,6 +14,9 @@
   OneSignalDeferred.push(async function(OneSignal) {
     await OneSignal.init({
       appId: "d3b2137f-7d7f-448c-8a52-8f602d16a7f9",
+      // GitHub Pages সাবফোল্ডারের জন্য এই দুটি লাইন জরুরি
+      serviceWorkerParam: { scope: "/YXT-ADMIN/" },
+      serviceWorkerPath: "/YXT-ADMIN/OneSignalSDKWorker.js" 
     });
   });
 </script>
