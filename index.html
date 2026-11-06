@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IND TMT - Admin Control Center</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <!-- Auth Gate / Login Modal -->
+  <div id="auth-modal" class="auth-overlay">
+    <div class="auth-card">
+      <div class="auth-logo">
+        <i class="fa-solid fa-trophy"></i>
+      </div>
+      <h2>IND TMT Admin Portal</h2>
+      <p>Secure management portal for Free Fire & 6v6 esports tournaments.</p>
+      <div id="auth-error" class="error-badge" style="display: none;"></div>
+      <button id="google-login-btn" class="btn btn-primary btn-block">
+        <i class="fa-brands fa-google"></i> Sign in with Google (Admin)
+      </button>
+      <div class="auth-footer">
+        <small><i class="fa-solid fa-shield-halved"></i> Authorized administrators with verified Custom Claims only</small>
+      </div>
+    </div>
+  </div>
+
+  <!-- Admin Shell -->
+  <div id="admin-shell" class="admin-layout" style="display: none;">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <i class="fa-solid fa-trophy brand-icon"></i>
+        <div>
+          <h3>IND TMT</h3>
+          <span class="badge badge-primary">ADMIN PANEL</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="#dashboard" class="nav-item active" data-tab="dashboard">
+          <i class="fa-solid fa-gauge-high"></i> Dashboard
+        </a>
+        <a href="#users" class="nav-item" data-tab="users">
+          <i class="fa-solid fa-users"></i> Users
+        </a>
+        <a href="#tournaments" class="nav-item" data-tab="tournaments">
+          <i class="fa-solid fa-gamepad"></i> Tournaments
+        </a>
+        <a href="#finance" class="nav-item" data-tab="finance">
+          <i class="fa-solid fa-money-bill-transfer"></i> Finance & Requests
+        </a>
+        <a href="#categories" class="nav-item" data-tab="categories">
+          <i class="fa-solid fa-layer-group"></i> Categories
+        </a>
+        <a href="#banners" class="nav-item" data-tab="banners">
+          <i class="fa-solid fa-images"></i> Banners
+        </a>
+        <a href="#results" class="nav-item" data-tab="results">
+          <i class="fa-solid fa-square-poll-vertical"></i> Results & Room
+        </a>
+        <a href="#leaderboard" class="nav-item" data-tab="leaderboard">
+          <i class="fa-solid fa-ranking-star"></i> Leaderboard
+        </a>
+        <a href="#rewards" class="nav-item" data-tab="rewards">
+          <i class="fa-solid fa-coins"></i> Reward Adjustment
+        </a>
+        <a href="#notifications" class="nav-item" data-tab="notifications">
+          <i class="fa-solid fa-bullhorn"></i> Noticeboard
+        </a>
+        <a href="#tickets" class="nav-item" data-tab="tickets">
+          <i class="fa-solid fa-headset"></i> Support Tickets
+        </a>
+        <a href="#appcode" class="nav-item" data-tab="appcode">
+          <i class="fa-solid fa-code"></i> App Code Editor
+        </a>
+        <a href="#settings" class="nav-item" data-tab="settings">
+          <i class="fa-solid fa-sliders"></i> App Settings
+        </a>
+        <a href="#profile" class="nav-item" data-tab="profile">
+          <i class="fa-solid fa-user-shield"></i> Admin Profile
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-pill">
+          <img id="admin-avatar" src="https://via.placeholder.com/40" alt="Avatar">
+          <div class="user-info">
+            <span id="admin-name">Admin</span>
+            <small id="admin-email">admin@indtmt.com</small>
+          </div>
+        </div>
+        <button id="logout-btn" class="btn btn-icon" title="Logout">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <header class="topbar">
+        <button id="mobile-menu-btn" class="btn btn-icon mobile-only">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+        <h2 id="page-title">Dashboard Overview</h2>
+        <div class="topbar-actions">
+          <button id="quick-create-tournament-btn" class="btn btn-primary">
+            <i class="fa-solid fa-plus"></i> New Tournament
+          </button>
+        </div>
+      </header>
+
+      <div class="content-body">
+        <!-- 1. DASHBOARD TAB -->
+        <section id="tab-dashboard" class="tab-pane active">
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-icon bg-blue"><i class="fa-solid fa-users"></i></div>
+              <div class="stat-info">
+                <span class="stat-label">Total Users</span>
+                <h3 id="stat-users">0</h3>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon bg-gold"><i class="fa-solid fa-trophy"></i></div>
+              <div class="stat-info">
+                <span class="stat-label">Active Tournaments</span>
+                <h3 id="stat-tournaments">0</h3>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon bg-green"><i class="fa-solid fa-indian-rupee-sign"></i></div>
+              <div class="stat-info">
+                <span class="stat-label">Total User Balance</span>
+                <h3 id="stat-points">₹0</h3>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon bg-purple"><i class="fa-solid fa-clock-rotate-left"></i></div>
+              <div class="stat-info">
+                <span class="stat-label">Pending Deposits</span>
+                <h3 id="stat-pending-deposits">0</h3>
+              </div>
+            </div>
+          </div>
+
+          <div class="dashboard-sections" style="margin-top: 20px;">
+            <div class="card">
+              <div class="card-header">
+                <h3>Live & Upcoming Matches (RTDB)</h3>
+                <span class="badge badge-success">REAL-TIME</span>
+              </div>
+              <div class="table-responsive">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Title</th>
+                      <th>Game / Mode</th>
+                      <th>Schedule</th>
+                      <th>Slots</th>
+                      <th>Status</th>
+                      <th>Room Credentials</th>
+                    </tr>
+                  </thead>
+                  <tbody id="dashboard-tournaments-tbody">
+                    <tr><td colspan="6" class="text-center">Loading tournament listings...</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 2. USERS TAB -->
+        <section id="tab-users" class="tab-pane">
+          <div class="card">
+            <div class="card-header flex-between">
+              <h3>Registered Players</h3>
+              <input type="text" id="user-search" class="form-input" placeholder="Search by username or email..." style="max-width: 280px;">
+            </div>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Player</th>
+                    <th>Email / Phone</th>
+                    <th>Deposit</th>
+                    <th>Winning</th>
+                    <th>Referral Code</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="users-tbody">
+                  <tr><td colspan="7" class="text-center">Loading users...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- 3. TOURNAMENTS TAB -->
+        <section id="tab-tournaments" class="tab-pane">
+          <div class="card">
+            <div class="card-header flex-between">
+              <h3>Tournament Management</h3>
+              <button id="add-tournament-btn" class="btn btn-primary">
+                <i class="fa-solid fa-plus"></i> Create Tournament
+              </button>
+            </div>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Match Title</th>
+                    <th>Category / Mode</th>
+                    <th>Schedule</th>
+                    <th>Entry Fee</th>
+                    <th>Prize Pool</th>
+                    <th>Slots</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="tournaments-tbody">
+                  <tr><td colspan="8" class="text-center">Loading tournaments...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- 4. FINANCE & REQUESTS TAB -->
+        <section id="tab-finance" class="tab-pane">
+          <div class="card">
+            <div class="card-header flex-between">
+              <h3>Deposit & Withdrawal Verification Requests</h3>
+              <div style="display: flex; gap: 8px;">
+                <button id="finance-filter-pending" class="btn btn-secondary active-filter">Pending Only</button>
+                <button id="finance-filter-all" class="btn btn-secondary">All Transactions</button>
+              </div>
+            </div>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>User ID</th>
+                    <th>Type</th>
+                    <th>Amount</th>
+                    <th>Method</th>
+                    <th>Account / Phone</th>
+                    <th>Transaction ID (UTR)</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="finance-tbody">
+                  <tr><td colspan="9" class="text-center">Loading financial transactions...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- 5. CATEGORIES TAB -->
+        <section id="tab-categories" class="tab-pane">
+          <div class="card">
+            <div class="card-header flex-between">
+              <h3>Game Categories</h3>
+              <button id="add-category-btn" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Add Category</button>
+            </div>
+            <div class="grid-cards" id="categories-grid">
+              <!-- Dynamically populated from /categories -->
+            </div>
+          </div>
+        </section>
+
+        <!-- 6. BANNERS TAB -->
+        <section id="tab-banners" class="tab-pane">
+          <div class="card">
+            <div class="card-header flex-between">
+              <h3>Home Screen Promotional Banners</h3>
+              <button id="add-banner-btn" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Add Banner</button>
+            </div>
+            <div class="grid-cards" id="banners-grid">
+              <!-- Dynamically populated from /banners -->
+            </div>
+          </div>
+        </section>
+
+        <!-- 7. MATCH RESULTS & ROOM CREDENTIALS TAB -->
+        <section id="tab-results" class="tab-pane">
+          <div class="card">
+            <div class="card-header">
+              <h3>Room ID, Room Password & Results Publishing</h3>
+            </div>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Tournament</th>
+                    <th>Status</th>
+                    <th>Room ID</th>
+                    <th>Password</th>
+                    <th>Winner</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="results-tbody">
+                  <tr><td colspan="6" class="text-center">Loading matches...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- 8. LEADERBOARD TAB -->
+        <section id="tab-leaderboard" class="tab-pane">
+          <div class="card">
+            <div class="card-header">
+              <h3>Current Leaderboard Standings</h3>
+            </div>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Rank</th>
+                    <th>Player</th>
+                    <th>Email</th>
+                    <th>Total Balance (₹)</th>
+                    <th>Winning (₹)</th>
+                  </tr>
+                </thead>
+                <tbody id="leaderboard-tbody">
+                  <tr><td colspan="5" class="text-center">Loading standings...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- 9. REWARD POINTS TAB -->
+        <section id="tab-rewards" class="tab-pane">
+          <div class="card">
+            <div class="card-header">
+              <h3>Wallet Points Manual Adjustment (Audit Ledger)</h3>
+            </div>
+            <div class="card-body">
+              <form id="points-adjustment-form" class="form-grid">
+                <div class="form-group">
+                  <label>Select User</label>
+                  <select id="reward-user-select" class="form-input" required></select>
+                </div>
+                <div class="form-group">
+                  <label>Balance Target</label>
+                  <select id="reward-target-balance" class="form-input">
+                    <option value="deposit">Deposit Wallet</option>
+                    <option value="winning">Winning Wallet</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Amount (₹ Positive to add, Negative to deduct)</label>
+                  <input type="number" id="reward-amount" class="form-input" placeholder="e.g. 100 or -50" required>
+                </div>
+                <div class="form-group full-width">
+                  <label>Audit Reason / Description</label>
+                  <input type="text" id="reward-description" class="form-input" placeholder="e.g. Free Fire Mega Cup Winner Reward" required>
+                </div>
+                <div class="form-group full-width">
+                  <button type="submit" class="btn btn-primary"><i class="fa-solid fa-check"></i> Post Wallet Adjustment</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </section>
+
+        <!-- 10. NOTIFICATIONS TAB -->
+        <section id="tab-notifications" class="tab-pane">
+          <div class="card">
+            <div class="card-header">
+              <h3>Broadcast Announcement</h3>
+            </div>
+            <div class="card-body">
+              <form id="notification-form" class="form-grid">
+                <div class="form-group">
+                  <label>Notification Title</label>
+                  <input type="text" id="notif-title" class="form-input" placeholder="e.g. Free Fire Mega Finals Live!" required>
+                </div>
+                <div class="form-group">
+                  <label>Notification Type</label>
+                  <select id="notif-type" class="form-input">
+                    <option value="announcement">General Announcement</option>
+                    <option value="match">Match Reminder</option>
+                    <option value="result">Match Result</option>
+                  </select>
+                </div>
+                <div class="form-group full-width">
+                  <label>Message Content</label>
+                  <textarea id="notif-message" class="form-input" rows="3" placeholder="Enter notice for Android app users..." required></textarea>
+                </div>
+                <div class="form-group full-width">
+                  <button type="submit" class="btn btn-primary"><i class="fa-solid fa-paper-plane"></i> Publish Notice</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </section>
+
+        <!-- 11. SUPPORT TICKETS TAB -->
+        <section id="tab-tickets" class="tab-pane">
+          <div class="card">
+            <div class="card-header">
+              <h3>Customer Support Desk</h3>
+            </div>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>User</th>
+                    <th>Subject</th>
+                    <th>Message</th>
+                    <th>Status</th>
+                    <th>Admin Reply</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="tickets-tbody">
+                  <tr><td colspan="6" class="text-center">Loading tickets...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- 12. USER APP CODE EDITOR TAB -->
+        <section id="tab-appcode" class="tab-pane">
+          <div class="card">
+            <div class="card-header flex-between">
+              <h3>User App Code / Config Editor (/app_code)</h3>
+              <button id="save-appcode-btn" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Save Code & Config</button>
+            </div>
+            <div class="card-body">
+              <p style="color: #94A3B8; margin-bottom: 12px; font-size: 13px;">
+                Securely store and retrieve client-side dynamic configurations, feature flags, or custom UI banners stored in <code>/app_code</code>.
+              </p>
+              <textarea id="appcode-textarea" class="form-input" style="font-family: monospace; height: 320px; width: 100%; font-size: 13px; line-height: 1.5; background: #070e1e;" placeholder="Loading /app_code..."></textarea>
+            </div>
+          </div>
+        </section>
+
+        <!-- 13. APP SETTINGS TAB -->
+        <section id="tab-settings" class="tab-pane">
+          <div class="card">
+            <div class="card-header">
+              <h3>Platform Configuration (/app_settings)</h3>
+            </div>
+            <div class="card-body">
+              <form id="settings-form" class="form-grid">
+                <div class="form-group">
+                  <label>App Name</label>
+                  <input type="text" id="setting-appname" class="form-input" value="IND TMT">
+                </div>
+                <div class="form-group">
+                  <label>App Version</label>
+                  <input type="text" id="setting-appversion" class="form-input" value="1.0.0">
+                </div>
+                <div class="form-group">
+                  <label>WhatsApp Support Link</label>
+                  <input type="text" id="setting-whatsapp" class="form-input" placeholder="+919876543210">
+                </div>
+                <div class="form-group">
+                  <label>Telegram Channel Link</label>
+                  <input type="text" id="setting-telegram" class="form-input" placeholder="https://t.me/indtmt">
+                </div>
+                <div class="form-group full-width">
+                  <label>Welcome Banner Notice</label>
+                  <input type="text" id="setting-notice" class="form-input" placeholder="Welcome announcement banner">
+                </div>
+                <div class="form-group full-width">
+                  <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Save App Settings</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </section>
+
+        <!-- 14. ADMIN PROFILE TAB -->
+        <section id="tab-profile" class="tab-pane">
+          <div class="card" style="max-width: 600px;">
+            <div class="card-header">
+              <h3>Administrator Identity</h3>
+            </div>
+            <div class="card-body">
+              <div class="profile-details">
+                <p><strong>Email:</strong> <span id="profile-email">admin@indtmt.com</span></p>
+                <p><strong>Role:</strong> Super Administrator</p>
+                <p><strong>Privileges:</strong> Full Tournament, Financial Verification & Settings Access</p>
+                <p><strong>Backend:</strong> Firebase Realtime Database (ind-tournament-bb712)</p>
+                <p><strong>Status:</strong> Active Authenticated Session</p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <!-- Tournament Create/Edit Modal -->
+  <div id="tournament-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="modal-title">Create New Tournament</h3>
+        <button class="close-modal-btn">&times;</button>
+      </div>
+      <form id="tournament-form">
+        <input type="hidden" id="modal-tournament-id">
+        <div class="form-group">
+          <label>Tournament Title</label>
+          <input type="text" id="form-t-title" class="form-input" required placeholder="e.g. Free Fire Squad Championship">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Category</label>
+            <input type="text" id="form-t-category" class="form-input" value="Free fire tournament " required>
+          </div>
+          <div class="form-group">
+            <label>Type / Mode</label>
+            <select id="form-t-type" class="form-input">
+              <option value="Solo">Solo</option>
+              <option value="Squad">Squad</option>
+              <option value="6 VS 6">6 VS 6</option>
+              <option value="Duo">Duo</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Map</label>
+            <input type="text" id="form-t-map" class="form-input" value="Bermuda" required>
+          </div>
+          <div class="form-group">
+            <label>Schedule / Time</label>
+            <input type="text" id="form-t-time" class="form-input" required placeholder="e.g. 15 Nov 08:00 PM">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Entry Fee (₹)</label>
+            <input type="number" id="form-t-entry" class="form-input" required value="0">
+          </div>
+          <div class="form-group">
+            <label>Prize Pool (₹)</label>
+            <input type="number" id="form-t-prize" class="form-input" required value="1000">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Per Kill Reward (₹)</label>
+            <input type="number" id="form-t-perkill" class="form-input" required value="10">
+          </div>
+          <div class="form-group">
+            <label>Total Slots</label>
+            <input type="number" id="form-t-slots" class="form-input" required value="48">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Room ID (Optional)</label>
+            <input type="text" id="form-t-roomid" class="form-input" placeholder="e.g. 9847291">
+          </div>
+          <div class="form-group">
+            <label>Room Password (Optional)</label>
+            <input type="text" id="form-t-roompass" class="form-input" placeholder="e.g. ind778">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary close-modal-btn">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Tournament</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Room Publish / Result Modal -->
+  <div id="room-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Publish Room ID & Password / Assign Winner</h3>
+        <button class="close-room-modal-btn">&times;</button>
+      </div>
+      <form id="room-publish-form">
+        <input type="hidden" id="room-tournament-id">
+        <div class="form-group">
+          <label>Room ID</label>
+          <input type="text" id="room-id-input" class="form-input" placeholder="Enter custom room ID">
+        </div>
+        <div class="form-group">
+          <label>Room Password</label>
+          <input type="text" id="room-pass-input" class="form-input" placeholder="Enter room password">
+        </div>
+        <div class="form-group">
+          <label>Match Status</label>
+          <select id="room-status-select" class="form-input">
+            <option value="Active">Active / Upcoming</option>
+            <option value="Completed">Completed</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Winner Player Name (Optional for completed match)</label>
+          <input type="text" id="room-winner-input" class="form-input" placeholder="Winner in-game name">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary close-room-modal-btn">Cancel</button>
+          <button type="submit" class="btn btn-primary">Update Match</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Category Modal -->
+  <div id="category-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Add Game Category</h3>
+        <button class="close-cat-modal-btn">&times;</button>
+      </div>
+      <form id="category-form">
+        <div class="form-group">
+          <label>Category Name</label>
+          <input type="text" id="cat-name-input" class="form-input" required placeholder="e.g. Free fire tournament ">
+        </div>
+        <div class="form-group">
+          <label>Category Image URL</label>
+          <input type="url" id="cat-img-input" class="form-input" required placeholder="https://example.com/image.jpg">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary close-cat-modal-btn">Cancel</button>
+          <button type="submit" class="btn btn-primary">Add Category</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Banner Modal -->
+  <div id="banner-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Add Home Screen Banner</h3>
+        <button class="close-banner-modal-btn">&times;</button>
+      </div>
+      <form id="banner-form">
+        <div class="form-group">
+          <label>Banner Title</label>
+          <input type="text" id="banner-title-input" class="form-input" required placeholder="e.g. Free Fire Mega Cup">
+        </div>
+        <div class="form-group">
+          <label>Image URL</label>
+          <input type="url" id="banner-img-input" class="form-input" required placeholder="https://example.com/banner.jpg">
+        </div>
+        <div class="form-group">
+          <label>Target Link (Optional)</label>
+          <input type="text" id="banner-link-input" class="form-input" placeholder="https://...">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary close-banner-modal-btn">Cancel</button>
+          <button type="submit" class="btn btn-primary">Add Banner</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Ticket Reply Modal -->
+  <div id="reply-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Respond to Ticket</h3>
+        <button class="close-reply-modal-btn">&times;</button>
+      </div>
+      <form id="ticket-reply-form">
+        <input type="hidden" id="reply-ticket-id">
+        <div class="form-group">
+          <label>Ticket Subject</label>
+          <p id="reply-ticket-subject" style="font-weight: 600;"></p>
+        </div>
+        <div class="form-group">
+          <label>User Message</label>
+          <p id="reply-ticket-message" style="color: #94A3B8;"></p>
+        </div>
+        <div class="form-group">
+          <label>Admin Reply</label>
+          <textarea id="reply-text" class="form-input" rows="4" required placeholder="Type your response to the user..."></textarea>
+        </div>
+        <div class="form-group">
+          <label>Status</label>
+          <select id="reply-status" class="form-input">
+            <option value="resolved">Resolved</option>
+            <option value="in_progress">In Progress</option>
+            <option value="open">Open</option>
+          </select>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary close-reply-modal-btn">Cancel</button>
+          <button type="submit" class="btn btn-primary">Send Reply</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Firebase Modular SDK -->
+  <script type="module" src="app.js"></script>
+</body>
+</html>
